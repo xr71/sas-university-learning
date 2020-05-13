@@ -58,3 +58,94 @@ proc glm data=STAT1.Garlic
 run;
 quit;
 
+
+
+* pearson correlation;
+
+proc corr data=stat1.ameshousing3;
+	var lot_area gr_liv_area basement_area 
+		deck_porch_area bedroom_abvgr total_bathroom;
+	with saleprice;
+	id PID;
+run;
+
+proc print data=stat1.ameshousing3 (obs=3); run;
+
+
+proc corr data=stat1.ameshousing3
+	plots=(matrix scatter);
+	var gr_liv_area basement_area 
+		deck_porch_area ;
+	with saleprice;
+	id PID;
+run;
+
+
+proc corr data=stat1.ameshousing3 nosimple best=5
+	plots=matrix;
+	var lot_area gr_liv_area basement_area 
+		deck_porch_area bedroom_abvgr total_bathroom
+		saleprice;
+run;
+
+proc corr data=stat1.bodyfat2
+	plots=(scatter matrix);
+	var age weight height neck chest abdomen hip thigh knee ankle biceps forearm wrist;
+	with pctbodyfat2;
+run;
+
+%let interval=Age Weight Height Neck Chest Abdomen Hip 
+              Thigh Knee Ankle Biceps Forearm Wrist;
+
+ods graphics / reset=all imagemap;
+proc corr data=STAT1.BodyFat2
+          plots(only)=scatter(nvar=all ellipse=none);
+   var &interval;
+   with PctBodyFat2;
+   id Case;
+   title "Correlations and Scatter Plots";
+run;
+
+%let interval=Biceps Forearm Wrist;
+
+ods graphics / reset=all imagemap;
+ods select scatterplot;
+proc corr data=STAT1.BodyFat2
+          plots(only)=scatter(nvar=all ellipse=none);
+   var &interval;
+   with PctBodyFat2;
+   id Case;
+   title "Correlations and Scatter Plots";
+run;
+
+
+
+
+%let interval=Age Weight Height Neck Chest Abdomen Hip 
+              Thigh Knee Ankle Biceps Forearm Wrist pctbodyfat2;
+
+proc corr data=stat1.bodyfat2
+	nosimple
+	best=5
+	out=pearson;
+	var &interval;
+run;
+
+proc corr data=stat1.bodyfat2 nosimple
+     plots(only)=scatter(nvar=all);
+     var Age Weight Height;   
+  run;
+  
+
+
+* simple linear regression;
+
+proc reg data=stat1.ameshousing3;
+	model saleprice = lot_area;
+run;
+
+
+ 
+proc reg data=stat1.bodyfat2; 
+	model pctbodyfat2 = weight; 
+run; 
