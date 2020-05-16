@@ -138,14 +138,4 @@ proc corr data=stat1.bodyfat2 nosimple
   
 
 
-* simple linear regression;
 
-proc reg data=stat1.ameshousing3;
-	model saleprice = lot_area;
-run;
-
-
- 
-proc reg data=stat1.bodyfat2; 
-	model pctbodyfat2 = weight; 
-run; 
