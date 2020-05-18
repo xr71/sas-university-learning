@@ -77,3 +77,48 @@ proc glm data=STAT1.drug plots(only)=intplot;
 run;
 quit;
 
+
+
+
+
+
+* multiple linear regression;
+
+proc reg data=stat1.ameshousing3;
+	model saleprice = lot_area basement_area;
+run; 
+
+
+proc glm data=stat1.ameshousing3
+	plots(only)=(contourfit);
+	model saleprice = lot_area basement_area;
+	store out=multiple;
+run; 
+
+proc plm restore=multiple plots=all;
+	effectplot contour(y=basement_area x=lot_area);
+	effectplot slicefit(x=lot_area sliceby=basement_area);
+run;
+
+
+*
+Run a regression of PctBodyFat2 on the variables Age, Weight, Height, Neck, Chest, Abdomen, Hip, Thigh, Knee, Ankle, Biceps, Forearm, and Wrist.
+;
+
+%let bodyinterval = Age	Weight	Height	Neck	Chest	Abdomen	Hip	Thigh	Knee	Ankle	Biceps	Forearm	Wrist;
+
+proc reg data=stat1.bodyfat;
+	model pctbodyfat2=&bodyinterval;
+run;
+
+
+* simplify;
+proc reg data=STAT1.BodyFat2;
+    model PctBodyFat2=Age Weight
+          Neck Abdomen Hip Thigh
+          Ankle Biceps Forearm Wrist;
+run;
+quit;
+
+
+
