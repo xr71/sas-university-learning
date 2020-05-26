@@ -1,0 +1,75 @@
+﻿****************************************************************;
+*  Retrieving Previous Values with the LAG Function            *;
+****************************************************************;
+
+data work.china_temps1;
+    set pg3.weather_china_daily2017(keep=City Date TavgC);
+    by City;
+    FirstPrevDay =lag1(TavgC);
+    SecondPrevDay=lag2(TavgC);
+    ThirdPrevDay =lag3(TavgC);
+    FourthPrevDay=lag4(TavgC);
+run;
+
+title 'Using LAG1 through LAG4 Functions';
+proc print data=work.china_temps1 noobs;
+run;
+title;
+
+****************************************************************;
+*  Demo                                                        *;
+*  1) Highlight and run the DATA step. View the output table   *;
+*     and notice that the first 365 rows contain the daily     *;
+*     average temperatures for Beijing and the last 365 rows   *;
+*     contain the daily average temperatures for Shanghai.     *;
+*  2) Uncomment the two assignment statements.                 *;
+*       TavgCPrevDay=lag1(TavgC);                              *;
+*       TempIncrease=TavgC-TavgCPrevDay;                       *;
+*  3) Run the DATA step and view the output table. Notice the  *;
+*     values of TavgCPrevDay and TempIncrease. Specifically,   *;
+*     look at the value of TavgCPrevDay for the first row of   *;
+*     Shanghai data (row 366). The last temperature for        *;
+*     Beijing is being used as the previous value for the      *;
+*     first temperature of Shanghai.                           *;
+*  4) Add a BY statement and a conditional statement to        *;
+*     correct the previous value anytime that there is a       *;
+*     switch to a new city.                                    *;
+*       by City;                                               *;
+*       TavgCPrevDay=lag1(TavgC);                              *;
+*       if first.City=1 then TavgCPrevDay=.;                   *;
+*       TempIncrease=TavgC-TavgCPrevDay;                       *;
+*  5) Run the DATA step and view the output table. Confirm     *;
+*     that the first row of Shanghai data (row 366) contains   *;
+*     a missing value for the previous temperature.            *;
+*  6) Run the ODS statements, the PROC MEANS step, and the     *;
+*     PROC SGPLOT step to determine the biggest difference in  *;
+*     daily average temperature between consecutive days.      *;
+*     In the HTML results, place your cursor on data points to *;
+*     see a tooltip of Date and TempIncrese.                   *;
+*     - The biggest decrease in temperature (-8.9) occurred in *;
+*       Beijing on 10/2/2017.                                  *;
+*     - The biggest increase in temperature (7.2) occurred in  *;
+*       Beijing on 6/7/2017.                                   *;
+*     - The biggest decrease in temperature (-10.5) occurred   *;
+*       in Shanghai on 2/20/2017.                              *;
+*     - The biggest increase in temperature (8.9) occurred in  *;
+*       Shanghai on 2/19/2017.                                 *;
+****************************************************************;
+
+data work.china_temps;
+    set pg3.weather_china_daily2017(keep=City Date TavgC);
+    *TavgCPrevDay=lag1(TavgC);
+    *TempIncrease=TavgC-TavgCPrevDay;
+run;
+
+ods html path="&pathout" file='china_temps.html';
+proc means data=work.china_temps;
+    class City;
+    var TempIncrease;
+run;
+
+ods graphics / width=10in height=5in imagemap=on tipmax=800;
+proc sgplot data=work.china_temps;
+    series x=Date y=TempIncrease / group=City tip=(Date TempIncrease);
+run;
+ods html close;

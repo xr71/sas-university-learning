@@ -1,0 +1,15 @@
+***********************************************************;
+*  Activity 2.05                                          *;
+*  Which Perl regular expression will not find all        *;
+*  tornados with a value of  EF3, EF-3, EF4, or EF-4?     *;
+***********************************************************;
+ 
+title 'Category EF3 and EF4 Tornados';
+proc print data=pg3.tornado_2017narrative;
+    where prxmatch('/(EF3|EF-3|EF4|EF-4)/',Narrative)>0; 
+    *where prxmatch('/(EF-?3|EF-?4)/',Narrative)>0; 
+    *where prxmatch('/EF-?(3|4)/',Narrative)>0; 
+    *where prxmatch('/EF-?[34]/',Narrative)>0; 
+    *where prxmatch('/EF.[34]/',Narrative)>0;
+run;
+title;

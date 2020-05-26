@@ -1,0 +1,30 @@
+***********************************************************;
+*  Activity 2.07                                          *;
+*  1) Run the program and view the results. Notice that   *;
+*     the Loc column contains the first position where    *;
+*     EF- is found in the Narrative column.               *;
+*  2) Uncomment the Narrative_New assignment statement.   *;
+*  3) Modify the first argument of the PRXCHANGE function *;
+*     to find the pattern of EF- and substitute it with   *;
+*     the value of EF.                                    *;
+*  4) Modify the second argument of the PRXCHANGE         *;
+*     function so that all occurrences of the pattern     *;
+*     are substituted.                                    *;
+*  5) Run the program and verify that the Narrative_New   *;
+*     column no longer contains the string EF- for        *;
+*     every Loc value greater than 0.                     *;
+*  6) For row 7, how many EF- values were substituted     *;
+*     by EF?                                              *;
+***********************************************************;   
+
+data work.tornadoEF;
+    set pg3.tornado_2017narrative;
+    length Narrative_New $ 4242;
+    Loc=prxmatch('/EF-/',Narrative);
+    *Narrative_New=prxchange('s/ / /',#,Narrative);
+run;
+
+title 'US Tornados';
+proc print data=work.tornadoEF;
+run;
+title;

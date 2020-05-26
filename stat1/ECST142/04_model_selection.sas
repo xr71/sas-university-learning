@@ -32,3 +32,33 @@ title;
 proc glmselect data=stat1.bodyfat2 plots=all;
 	STEPWISE: model pctbodyfat2 = &bodyfatinterval / selection=stepwise select=sl;
 run;
+
+proc glmselect data=stat1.bodyfat2 plots=all;
+	model pctbodyfat2 = &bodyfatinterval / selection=forward select=sl;
+run;
+
+proc glmselect data=stat1.bodyfat2 plots=all;
+	model pctbodyfat2 = &bodyfatinterval / selection=stepwise select=sl slentry=0.05 slexit=0.05;
+run;
+
+proc glmselect data=stat1.bodyfat2 plots=all;
+	model pctbodyfat2 = &bodyfatinterval / selection=forward select=sl slentry=0.05;
+run;
+
+
+
+* more model selection - using information criterion;
+
+%let bodyfatinterval = Age Weight Height Neck Chest Abdomen Hip Thigh Knee Ankle Biceps Forearm Wrist;
+
+proc glmselect data=stat1.bodyfat2 plots=all;
+	STEPWISESBC: model pctbodyfat2 = &bodyfatinterval / 
+		selection=stepwise select=SBC;
+run;
+
+proc glmselect data=stat1.bodyfat2 plots=all;
+	stepwiseaic: model pctbodyfat2 = &bodyfatinterval / 
+		selection=stepwise select=AIC;
+run;
+
+	
