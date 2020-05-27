@@ -11,6 +11,6 @@
       
 title 'Category EF3 and EF4 Tornados';
 proc print data=pg3.tornado_2017narrative;
-    where prxmatch('/ /',Narrative)>0; /* Returns 21 rows */
+    where prxmatch('/EF-?(3|4)/',Narrative)>0; /* Returns 21 rows */
 run;
 title;

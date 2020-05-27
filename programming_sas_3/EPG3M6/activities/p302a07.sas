@@ -21,7 +21,7 @@ data work.tornadoEF;
     set pg3.tornado_2017narrative;
     length Narrative_New $ 4242;
     Loc=prxmatch('/EF-/',Narrative);
-    *Narrative_New=prxchange('s/ / /',#,Narrative);
+    Narrative_New=prxchange('s/EF-/EF/',-1,Narrative);
 run;
 
 title 'US Tornados';
